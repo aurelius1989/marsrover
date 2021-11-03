@@ -1,0 +1,77 @@
+buildscript {
+	ext {
+		springBootVersion = '2.3.3.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+		maven { url "https://plugins.gradle.org/m2/" }
+		jcenter()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+plugins {
+	id 'org.springframework.boot' version '2.3.3.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+	id 'java'
+}
+
+ext {
+	springBootVersion = '2.3.3.RELEASE'
+}
+
+group = 'agillic.marsrover'
+
+jar {
+	archiveBaseName = 'marsrover-service'
+	archiveVersion = '0.0.1-SNAPSHOT'
+}
+sourceCompatibility = '1.8'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+	maven { url "https://repo.spring.io/milestone" }
+	maven { url "http://oss.jfrog.org/artifactory/oss-snapshot-local"}
+	jcenter()
+}
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'application'
+
+mainClassName = 'agillic.marsrover.MarsRoverApplication'
+bootJar.enabled = false
+bootDistZip.enabled = false
+bootDistTar.enabled = false
+jar.enabled = true
+distributions {
+	main {
+		contents {
+			exclude("**/spring-boot-devtools-*.jar")
+		}
+	}
+}
+applicationName = "marsrover"
+
+dependencies {
+	implementation "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}"
+
+	testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+}
+
+bootRun {
+	jvmArgs = [ '-Dspring.profiles.active=local' ]
+}
+
+test {
+	useJUnit()
+}
